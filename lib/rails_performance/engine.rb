@@ -13,7 +13,7 @@ module RailsPerformance
       if ::Rails::VERSION::MAJOR.to_i >= 5
         app.middleware.insert_after ActionDispatch::Executor, RailsPerformance::Rails::Middleware
       else
-        after = app.config.serve_static_files ? ActionDispatch::Static : Rack::SendFile
+        after = app.config.serve_static_files ? ActionDispatch::Static : Rack::Sendfile
         app.middleware.insert_after after, RailsPerformance::Rails::Middleware
       end
       # look like it works in reverse order?
