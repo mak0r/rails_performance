@@ -13,11 +13,8 @@ module RailsPerformance
       if ::Rails::VERSION::MAJOR.to_i >= 5
         app.middleware.insert_after ActionDispatch::Executor, RailsPerformance::Rails::Middleware
       else
-        begin
-          app.middleware.insert_after ActionDispatch::Static, RailsPerformance::Rails::Middleware
-        rescue
-          app.middleware.insert_after Rack::SendFile, RailsPerformance::Rails::Middleware
-        end
+        after = app.config.serve_static_files ? ActionDispatch::Static : Rack::SendFile
+        app.middleware.insert_after after, RailsPerformance::Rails::Middleware
       end
       # look like it works in reverse order?
       app.middleware.insert_before RailsPerformance::Rails::Middleware, RailsPerformance::Rails::MiddlewareTraceStorerAndCleanup
